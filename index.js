@@ -12,6 +12,7 @@ const prepareRefunds = async () => {
     });
     const xmlData = await readXml(xmlFiles);
     const parsedData = xmlData.map(xmlParser);
+    console.log(parsedData)
     const perUser = parsedData.reduce((acc, curr) => {
       curr.forEach((element) => {
         if (acc[element.imeIPrezime]) {
