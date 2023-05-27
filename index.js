@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
-const { readXml, xmlParser, writeCsv } = require("./readXml");
+const { readXml, xmlParser, writeCsv, createExcelTable } = require("./readXml");
+
 
 const prepareRefunds = async () => {
   try {
@@ -12,7 +13,6 @@ const prepareRefunds = async () => {
     });
     const xmlData = await readXml(xmlFiles);
     const parsedData = xmlData.map(xmlParser);
-    console.log(parsedData)
     const perUser = parsedData.reduce((acc, curr) => {
       curr.forEach((element) => {
         if (acc[element.imeIPrezime]) {
@@ -24,11 +24,22 @@ const prepareRefunds = async () => {
 
       return acc;
     }, {});
+    // console.log(perUser);
+    for (const key of Object.keys(perUser)) {
+     perUser[key].push(perUser[key].reduce((acc, curr) => {
+      acc.Bruto += Number(curr.Bruto);
+      return acc;
+     },{Bruto: 0}))
+    }
+    // Promise.all(Object.keys(perUser).map(userName => {
+    //   writeCsv(perUser[userName])
+    // }))
+
     Promise.all(Object.keys(perUser).map(userName => {
-      writeCsv(perUser[userName])
+      createExcelTable(perUser[userName])
     }))
 
-    console.log(perUser);
+    // console.log(perUser);
   } catch (err) {
     console.log(err);
   }

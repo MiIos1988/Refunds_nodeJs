@@ -18,6 +18,7 @@
   "homepage": "https://github.com/MiIos1988/refunds#readme",
   "dependencies": {
     "csv-writer": "^1.6.0",
-    "fast-xml-parser": "^4.2.2"
+    "fast-xml-parser": "^4.2.2",
+    "xlsx-populate": "^1.21.0"
   }
 }
