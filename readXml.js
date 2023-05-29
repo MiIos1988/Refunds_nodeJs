@@ -3,6 +3,7 @@ const XlsxPopulate = require('xlsx-populate');
 const { XMLParser } = require("fast-xml-parser");
 const fs = require("fs");
 const path = require("path");
+const xml2js = require('xml2js');
 
 function readXml(files) {
   return Promise.all(
@@ -16,23 +17,51 @@ function readXml(files) {
 }
 
 function xmlParser(xmlFileData) {
-  const parser = new XMLParser();
-  const data = parser.parse(xmlFileData);
+let data
 
-  return data["ns1:PodaciPoreskeDeklaracije"]["ns1:DeklarisaniPrihodi"][
-    "ns1:PodaciOPrihodima"
-  ].map((income) => ({
+  xml2js.parseString(xmlFileData, (err, result) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+   data = result['ns1:PodaciPoreskeDeklaracije']['ns1:DeklarisaniPrihodi'][0]['ns1:PodaciOPrihodima']
+    .map((income) => ({
     imeIPrezime: `${income["ns1:Ime"]} ${income["ns1:Prezime"]}`,
-    SVP: income["ns1:SVP"],
-    Bruto: income["ns1:Bruto"],
-    OsnovicaPorez: income["ns1:OsnovicaPorez"],
-    Porez: income["ns1:Porez"],
-    OsnovicaDoprinosi: income["ns1:OsnovicaDoprinosi"],
-    PIO: income["ns1:PIO"],
-    ZDR: income["ns1:ZDR"],
-    NEZ: income["ns1:NEZ"],
-    PIOBen: income["ns1:PIOBen"],
-  }));
+    SVP: income["ns1:SVP"][0],
+    Bruto: income["ns1:Bruto"][0],
+    OsnovicaPorez: income["ns1:OsnovicaPorez"][0],
+    Porez: income["ns1:Porez"][0],
+    OsnovicaDoprinosi: income["ns1:OsnovicaDoprinosi"][0],
+    PIO: income["ns1:PIO"][0],
+    ZDR: income["ns1:ZDR"][0],
+    NEZ: income["ns1:NEZ"][0],
+    PIOBen: income["ns1:PIOBen"][0],
+    }));
+});
+return data
+
+
+  // const parser = new XMLParser();
+  // const data = parser.parse(xmlFileData);
+  // console.log( data["ns1:PodaciPoreskeDeklaracije"]["ns1:DeklarisaniPrihodi"][
+  //   "ns1:PodaciOPrihodima"
+  // ])
+
+  // return data["ns1:PodaciPoreskeDeklaracije"]["ns1:DeklarisaniPrihodi"][
+  //   "ns1:PodaciOPrihodima"
+  // ].map((income) => ({
+  //   imeIPrezime: `${income["ns1:Ime"]} ${income["ns1:Prezime"]}`,
+  //   SVP: income["ns1:SVP"],
+  //   Bruto: income["ns1:Bruto"],
+  //   OsnovicaPorez: income["ns1:OsnovicaPorez"],
+  //   Porez: income["ns1:Porez"],
+  //   OsnovicaDoprinosi: income["ns1:OsnovicaDoprinosi"],
+  //   PIO: income["ns1:PIO"],
+  //   ZDR: income["ns1:ZDR"],
+  //   NEZ: income["ns1:NEZ"],
+  //   PIOBen: income["ns1:PIOBen"],
+  // }));
+  
 }
 
 function writeCsv(data) {

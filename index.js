@@ -28,8 +28,14 @@ const prepareRefunds = async () => {
     for (const key of Object.keys(perUser)) {
      perUser[key].push(perUser[key].reduce((acc, curr) => {
       acc.Bruto += Number(curr.Bruto);
+      acc.OsnovicaPorez += Number(curr.OsnovicaPorez);
+      acc.Porez += Number(curr.Porez);
+      acc.OsnovicaDoprinosi += Number(curr.OsnovicaDoprinosi);
+      acc.PIO += Number(curr.PIO);
+      acc.ZDR += Number(curr.ZDR);
+      acc.NEZ += Number(curr.NEZ);
       return acc;
-     },{Bruto: 0}))
+     },{Bruto: 0, OsnovicaPorez: 0, Porez: 0, OsnovicaDoprinosi: 0, PIO: 0, ZDR: 0, NEZ: 0,}))
     }
     // Promise.all(Object.keys(perUser).map(userName => {
     //   writeCsv(perUser[userName])
