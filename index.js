@@ -12,6 +12,7 @@ const prepareRefunds = async () => {
     });
     const xmlData = await readXml(xmlFiles);
     const parsedData = xmlData.map(xmlParser);
+    // console.log(parsedData);
     const perUser = parsedData.reduce((acc, curr) => {
       curr.forEach((element) => {
         if (acc[element.imeIPrezime]) {
@@ -24,25 +25,39 @@ const prepareRefunds = async () => {
       return acc;
     }, {});
     for (const key of Object.keys(perUser)) {
-      perUser[key].push(perUser[key].reduce((acc, curr) => {
-        acc.Bruto += Number(curr.Bruto);
-        acc.OsnovicaPorez += Number(curr.OsnovicaPorez);
-        acc.Porez += Number(curr.Porez);
-        acc.OsnovicaDoprinosi += Number(curr.OsnovicaDoprinosi);
-        acc.PIO += Number(curr.PIO);
-        acc.ZDR += Number(curr.ZDR);
-        acc.NEZ += Number(curr.NEZ);
-        return acc;
-      }, { Bruto: 0, OsnovicaPorez: 0, Porez: 0, OsnovicaDoprinosi: 0, PIO: 0, ZDR: 0, NEZ: 0, }))
+      perUser[key].push(
+        perUser[key].reduce(
+          (acc, curr) => {
+            acc.Bruto += Number(curr.Bruto);
+            acc.OsnovicaPorez += Number(curr.OsnovicaPorez);
+            acc.Porez += Number(curr.Porez);
+            acc.OsnovicaDoprinosi += Number(curr.OsnovicaDoprinosi);
+            acc.PIO += Number(curr.PIO);
+            acc.ZDR += Number(curr.ZDR);
+            acc.NEZ += Number(curr.NEZ);
+            return acc;
+          },
+          {
+            Bruto: 0,
+            OsnovicaPorez: 0,
+            Porez: 0,
+            OsnovicaDoprinosi: 0,
+            PIO: 0,
+            ZDR: 0,
+            NEZ: 0,
+          }
+        )
+      );
     }
     // Promise.all(Object.keys(perUser).map(userName => {
     //   writeCsv(perUser[userName])
     // }))
 
-    Promise.all(Object.keys(perUser).map(userName => {
-      createExcelTable(perUser[userName])
-    }))
-
+    Promise.all(
+      Object.keys(perUser).map((userName) => {
+        createExcelTable(perUser[userName]);
+      })
+    );
   } catch (err) {
     console.log(err);
   }

@@ -19,6 +19,7 @@ function xmlParser(xmlFileData) {
 
   const parser = new XMLParser();
   const data = parser.parse(xmlFileData);
+  console.log(data)
 
   if (!Array.isArray(data["ns1:PodaciPoreskeDeklaracije"]["ns1:DeklarisaniPrihodi"][
     "ns1:PodaciOPrihodima"
@@ -34,6 +35,9 @@ function xmlParser(xmlFileData) {
     "ns1:PodaciOPrihodima"
   ].map((income) => ({
     imeIPrezime: `${income["ns1:Ime"]} ${income["ns1:Prezime"]}`,
+    date: data["ns1:PodaciPoreskeDeklaracije"]["ns1:PodaciOPrijavi"][
+      "ns1:ObracunskiPeriod"
+    ],
     SVP: income["ns1:SVP"],
     Bruto: income["ns1:Bruto"],
     OsnovicaPorez: income["ns1:OsnovicaPorez"],
