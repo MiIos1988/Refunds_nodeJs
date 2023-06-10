@@ -16,10 +16,8 @@ function readXml(files) {
 }
 
 function xmlParser(xmlFileData) {
-
   const parser = new XMLParser();
   const data = parser.parse(xmlFileData);
-  console.log(data)
 
   if (!Array.isArray(data["ns1:PodaciPoreskeDeklaracije"]["ns1:DeklarisaniPrihodi"][
     "ns1:PodaciOPrihodima"
@@ -30,7 +28,6 @@ function xmlParser(xmlFileData) {
       "ns1:PodaciOPrihodima"
     ]]
   }
-
   return data["ns1:PodaciPoreskeDeklaracije"]["ns1:DeklarisaniPrihodi"][
     "ns1:PodaciOPrihodima"
   ].map((income) => ({

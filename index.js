@@ -12,8 +12,8 @@ const prepareRefunds = async () => {
     });
     const xmlData = await readXml(xmlFiles);
     const parsedData = xmlData.map(xmlParser);
-    // console.log(parsedData);
     const perUser = parsedData.reduce((acc, curr) => {
+      console.log(acc, '*****************')
       curr.forEach((element) => {
         if (acc[element.imeIPrezime]) {
           acc[element.imeIPrezime].push(element);
@@ -21,9 +21,11 @@ const prepareRefunds = async () => {
           acc[element.imeIPrezime] = [element];
         }
       });
-
       return acc;
     }, {});
+
+    // console.log(perUser);
+
     for (const key of Object.keys(perUser)) {
       perUser[key].push(
         perUser[key].reduce(
