@@ -22,6 +22,7 @@ const prepareRefunds = async () => {
       });
       return acc;
     }, {});
+    console.log(perUser);
 
     // console.log(perUser, '************************');
 
