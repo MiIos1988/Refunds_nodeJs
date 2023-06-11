@@ -1,5 +1,5 @@
 const csvWriter = require("csv-writer");
-const XlsxPopulate = require('xlsx-populate');
+const XlsxPopulate = require("xlsx-populate");
 const { XMLParser } = require("fast-xml-parser");
 const fs = require("fs");
 const path = require("path");
@@ -19,14 +19,20 @@ function xmlParser(xmlFileData) {
   const parser = new XMLParser();
   const data = parser.parse(xmlFileData);
 
-  if (!Array.isArray(data["ns1:PodaciPoreskeDeklaracije"]["ns1:DeklarisaniPrihodi"][
-    "ns1:PodaciOPrihodima"
-  ])) {
+  if (
+    !Array.isArray(
+      data["ns1:PodaciPoreskeDeklaracije"]["ns1:DeklarisaniPrihodi"][
+        "ns1:PodaciOPrihodima"
+      ]
+    )
+  ) {
     data["ns1:PodaciPoreskeDeklaracije"]["ns1:DeklarisaniPrihodi"][
       "ns1:PodaciOPrihodima"
-    ] = [data["ns1:PodaciPoreskeDeklaracije"]["ns1:DeklarisaniPrihodi"][
-      "ns1:PodaciOPrihodima"
-    ]]
+    ] = [
+      data["ns1:PodaciPoreskeDeklaracije"]["ns1:DeklarisaniPrihodi"][
+        "ns1:PodaciOPrihodima"
+      ],
+    ];
   }
   return data["ns1:PodaciPoreskeDeklaracije"]["ns1:DeklarisaniPrihodi"][
     "ns1:PodaciOPrihodima"
@@ -45,7 +51,6 @@ function xmlParser(xmlFileData) {
     NEZ: income["ns1:NEZ"],
     PIOBen: income["ns1:PIOBen"],
   }));
-
 }
 
 function writeCsv(data) {
@@ -77,7 +82,7 @@ function writeCsv(data) {
       PIOBen: { width: 15 },
     },
   });
-  writer.writeRecords(data)
+  writer.writeRecords(data);
 }
 
 async function createExcelTable(data) {
@@ -100,19 +105,28 @@ async function createExcelTable(data) {
   sheet.column(9).width(15);
   sheet.column(10).width(15);
 
+  // Increase height of the first row
+  const firstRow = sheet.row(1).height(50);
+
+  // Wrap text in the first row
+  firstRow.style({
+    wrapText: true,
+    verticalAlignment: "center",
+    horizontalAlignment: "center",
+  });
 
   // Defining table headers
   const headerRow = sheet.row(1);
-  headerRow.cell(1).value('Ime i prezime');
-  headerRow.cell(2).value('SVP');
-  headerRow.cell(3).value('Bruto');
-  headerRow.cell(4).value('Osnovica porez');
-  headerRow.cell(5).value('Porez');
-  headerRow.cell(6).value('Osnovica doprinosa');
-  headerRow.cell(7).value('PIO');
-  headerRow.cell(8).value('ZDR');
-  headerRow.cell(9).value('NEZ');
-  headerRow.cell(10).value('PIO ben');
+  headerRow.cell(1).value(" ");
+  headerRow.cell(2).value("Šifra vrste prihoda/doprinosa");
+  headerRow.cell(3).value("Bruto prihod");
+  headerRow.cell(4).value("Osnovica za porez");
+  headerRow.cell(5).value("Porez");
+  headerRow.cell(6).value("Osnovica za doprinose");
+  headerRow.cell(7).value("Pio (zaposleni + poslodavac)");
+  headerRow.cell(8).value("Zdravstvo (zaposleni + poslodavac)");
+  headerRow.cell(9).value("Nezaposlenost (zaposleni + poslodavac)");
+  headerRow.cell(10).value("PIO ben");
 
   // Data filling
   data.forEach((entry, index) => {
@@ -129,7 +143,6 @@ async function createExcelTable(data) {
     row.cell(10).value(entry.PIOBen);
   });
 
-
   // Recording the workbook to a file
 
   await workbook.toFileAsync(`result/${fileName}.xlsx`);
@@ -139,5 +152,5 @@ module.exports = {
   readXml,
   xmlParser,
   writeCsv,
-  createExcelTable
+  createExcelTable,
 };

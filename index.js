@@ -13,7 +13,6 @@ const prepareRefunds = async () => {
     const xmlData = await readXml(xmlFiles);
     const parsedData = xmlData.map(xmlParser);
     const perUser = parsedData.reduce((acc, curr) => {
-      console.log(acc, '*****************')
       curr.forEach((element) => {
         if (acc[element.imeIPrezime]) {
           acc[element.imeIPrezime].push(element);
@@ -24,9 +23,10 @@ const prepareRefunds = async () => {
       return acc;
     }, {});
 
-    // console.log(perUser);
+    // console.log(perUser, '************************');
 
     for (const key of Object.keys(perUser)) {
+      // console.log(perUser[key], "*****************************");
       perUser[key].push(
         perUser[key].reduce(
           (acc, curr) => {
@@ -51,6 +51,7 @@ const prepareRefunds = async () => {
         )
       );
     }
+
     // Promise.all(Object.keys(perUser).map(userName => {
     //   writeCsv(perUser[userName])
     // }))
