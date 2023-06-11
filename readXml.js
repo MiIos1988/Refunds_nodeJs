@@ -15,6 +15,12 @@ function readXml(files) {
   );
 }
 
+function returnFormData(dateString) {
+  const dateParts = dateString.split("-");
+  const dateFormat = `${dateParts[2]}.${dateParts[1]}.${dateParts[0]}.`;
+  return dateFormat;
+}
+
 function xmlParser(xmlFileData) {
   const parser = new XMLParser();
   const data = parser.parse(xmlFileData);
@@ -38,9 +44,11 @@ function xmlParser(xmlFileData) {
     "ns1:PodaciOPrihodima"
   ].map((income) => ({
     imeIPrezime: `${income["ns1:Ime"]} ${income["ns1:Prezime"]}`,
-    date: data["ns1:PodaciPoreskeDeklaracije"]["ns1:PodaciOPrijavi"][
-      "ns1:DatumPlacanja"
-    ],
+    date: returnFormData(
+      data["ns1:PodaciPoreskeDeklaracije"]["ns1:PodaciOPrijavi"][
+        "ns1:DatumPlacanja"
+      ]
+    ),
     SVP: income["ns1:SVP"],
     Bruto: income["ns1:Bruto"],
     PoreskoOslobodjenje: income["ns1:Bruto"] - income["ns1:OsnovicaPorez"],
@@ -50,9 +58,14 @@ function xmlParser(xmlFileData) {
     PIO: income["ns1:PIO"],
     ZDR: income["ns1:ZDR"],
     NEZ: income["ns1:NEZ"],
-    DopTeretZaposlenog: (income["ns1:OsnovicaDoprinosi"] * 19.9) / 100,
-    DopTeretPoslodavca: (income["ns1:OsnovicaDoprinosi"] * 16.15) / 100,
-    PIOBen: income["ns1:PIOBen"],
+    DopTeretZaposlenog: (
+      (income["ns1:OsnovicaDoprinosi"] * 19.9) /
+      100
+    ).toFixed(2),
+    DopTeretPoslodavca: (
+      (income["ns1:OsnovicaDoprinosi"] * 16.15) /
+      100
+    ).toFixed(2),
   }));
 }
 
@@ -106,7 +119,9 @@ async function createExcelTable(data) {
   sheet.column(7).width(15);
   sheet.column(8).width(20);
   sheet.column(9).width(20);
-  sheet.column(10).width(20);
+  sheet.column(10).width(25);
+  sheet.column(11).width(20);
+  sheet.column(12).width(20);
 
   // Increase height of the first row
   const firstRow = sheet.row(1).height(50);
@@ -118,36 +133,51 @@ async function createExcelTable(data) {
     horizontalAlignment: "center",
     bold: true,
   });
+
   sheet.cell("A1").style({ fill: { type: "solid", color: "D3BAD5" } });
-  sheet.range("B1:J1").style({ fill: { type: "solid", color: "C6EFCE" } });
-  sheet.range("A1:J1").style({ border: true });
+  sheet.range("B1:L1").style({ fill: { type: "solid", color: "C6EFCE" } });
+  sheet.range("A1:L1").style({ border: true });
 
   const startRow = 2;
   const endRow = data.length;
   sheet
-    .range(`B${startRow}:J${endRow}`)
+    .range(`B${startRow}:L${endRow}`)
     .style({ fill: { type: "solid", color: "FFFF00" } });
 
   sheet
-    .range(`C${endRow + 1}:I${endRow + 1}`)
+    .range(`C${endRow + 1}:F${endRow + 1}`)
     .style({ fill: { type: "solid", color: "FF0000" } });
 
   sheet
-    .range(`A${startRow}:J${endRow + 1}`)
+    .range(`K${endRow + 1}:L${endRow + 1}`)
+    .style({ fill: { type: "solid", color: "FF0000" } });
+
+  sheet
+    .range(`A${startRow}:L${endRow + 1}`)
     .style({ border: true, borderColor: "000000", bold: true });
+
+  sheet
+    .range(`D${startRow}:D${endRow}`)
+    .style({ fill: { type: "solid", color: "FFFFFF" } });
+
+  sheet
+    .range(`K${startRow}:L${endRow}`)
+    .style({ fill: { type: "solid", color: "FFFFFF" } });
 
   // Defining table headers
   const headerRow = sheet.row(1);
   headerRow.cell(1).value(" ");
   headerRow.cell(2).value("Šifra vrste prihoda/doprinosa");
   headerRow.cell(3).value("Bruto prihod");
-  headerRow.cell(4).value("Osnovica za porez");
-  headerRow.cell(5).value("Porez");
-  headerRow.cell(6).value("Osnovica za doprinose");
-  headerRow.cell(7).value("Pio (zaposleni + poslodavac)");
-  headerRow.cell(8).value("Zdravstvo (zaposleni + poslodavac)");
-  headerRow.cell(9).value("Nezaposlenost (zaposleni + poslodavac)");
-  headerRow.cell(10).value("PIO ben");
+  headerRow.cell(4).value("Poresko oslobođenje");
+  headerRow.cell(5).value("Osnovica za porez");
+  headerRow.cell(6).value("Porez");
+  headerRow.cell(7).value("Osnovica za doprinose");
+  headerRow.cell(8).value("Pio (zaposleni + poslodavac)");
+  headerRow.cell(9).value("Zdravstvo (zaposleni + poslodavac)");
+  headerRow.cell(10).value("Nezaposlenost (zaposleni + poslodavac)");
+  headerRow.cell(11).value("Doprinosi na teret zaposlenog");
+  headerRow.cell(12).value("Doprinosi na teret poslodavca");
 
   // Data filling
   data.forEach((entry, index) => {
@@ -155,13 +185,19 @@ async function createExcelTable(data) {
     row.cell(1).value(entry.date);
     row.cell(2).value(entry.SVP);
     row.cell(3).value(entry.Bruto);
-    row.cell(4).value(entry.OsnovicaPorez);
-    row.cell(5).value(entry.Porez);
-    row.cell(6).value(entry.OsnovicaDoprinosi);
-    row.cell(7).value(entry.PIO);
-    row.cell(8).value(entry.ZDR);
-    row.cell(9).value(entry.NEZ);
-    row.cell(10).value(entry.PIOBen);
+    row.cell(4).value(entry.PoreskoOslobodjenje);
+    row.cell(5).value(entry.OsnovicaPorez);
+    row.cell(6).value(entry.Porez);
+    row.cell(7).value(entry.OsnovicaDoprinosi);
+    row.cell(8).value(entry.PIO);
+    row.cell(9).value(entry.ZDR);
+    row.cell(10).value(entry.NEZ);
+    row.cell(11).value(entry.DopTeretZaposlenog);
+    row.cell(12).value(entry.DopTeretPoslodavca);
+
+    // row.cell(4).style({ fill: { type: "solid", color: "FFFFFF" } });
+
+    row.style({ horizontalAlignment: "center" });
   });
 
   // Recording the workbook to a file

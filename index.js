@@ -22,32 +22,34 @@ const prepareRefunds = async () => {
       });
       return acc;
     }, {});
-    console.log(perUser);
-
-    // console.log(perUser, '************************');
 
     for (const key of Object.keys(perUser)) {
-      // console.log(perUser[key], "*****************************");
       perUser[key].push(
         perUser[key].reduce(
           (acc, curr) => {
             acc.Bruto += Number(curr.Bruto);
+            acc.PoreskoOslobodjenje += Number(curr.PoreskoOslobodjenje);
             acc.OsnovicaPorez += Number(curr.OsnovicaPorez);
             acc.Porez += Number(curr.Porez);
             acc.OsnovicaDoprinosi += Number(curr.OsnovicaDoprinosi);
             acc.PIO += Number(curr.PIO);
             acc.ZDR += Number(curr.ZDR);
             acc.NEZ += Number(curr.NEZ);
+            acc.DopTeretZaposlenog += Number(curr.DopTeretZaposlenog);
+            acc.DopTeretPoslodavca += Number(curr.DopTeretPoslodavca);
             return acc;
           },
           {
             Bruto: 0,
+            PoreskoOslobodjenje: 0,
             OsnovicaPorez: 0,
             Porez: 0,
             OsnovicaDoprinosi: 0,
             PIO: 0,
             ZDR: 0,
             NEZ: 0,
+            DopTeretZaposlenog: 0,
+            DopTeretPoslodavca: 0,
           }
         )
       );
