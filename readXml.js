@@ -196,12 +196,10 @@ async function createExcelTable(data) {
     row.cell(12).value(entry.DopTeretPoslodavca);
 
     // row.cell(4).style({ fill: { type: "solid", color: "FFFFFF" } });
-
     row.style({ horizontalAlignment: "center" });
   });
 
   // Recording the workbook to a file
-
   await workbook.toFileAsync(`result/${fileName}.xlsx`);
 }
 
