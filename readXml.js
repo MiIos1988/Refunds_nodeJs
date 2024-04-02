@@ -1,4 +1,3 @@
-const csvWriter = require("csv-writer");
 const XlsxPopulate = require("xlsx-populate");
 const { XMLParser } = require("fast-xml-parser");
 const fs = require("fs");
