@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const { readXml, xmlParser, writeCsv, createExcelTable } = require("./readXml");
+const { readXml, xmlParser, createExcelTable } = require("./readXml");
 
 const prepareRefunds = async () => {
   try {
