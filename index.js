@@ -55,10 +55,6 @@ const prepareRefunds = async () => {
       );
     }
 
-    // Promise.all(Object.keys(perUser).map(userName => {
-    //   writeCsv(perUser[userName])
-    // }))
-
     Promise.all(
       Object.keys(perUser).map((userName) => {
         createExcelTable(perUser[userName]);

@@ -69,38 +69,6 @@ function xmlParser(xmlFileData) {
   }));
 }
 
-function writeCsv(data) {
-  const fileName = data[0].imeIPrezime;
-  const writer = csvWriter.createObjectCsvWriter({
-    path: path.resolve(__dirname, "result", `${fileName}.csv`),
-    header: [
-      { id: "imeIPrezime", title: "Ime i prezime" },
-      { id: "SVP", title: "SVP" },
-      { id: "Bruto", title: "Bruto" },
-      { id: "OsnovicaPorez", title: "OsnovicaPorez" },
-      { id: "Porez", title: "Porez" },
-      { id: "OsnovicaDoprinosi", title: "OsnovicaDoprinosi" },
-      { id: "PIO", title: "PIO" },
-      { id: "ZDR", title: "ZDR" },
-      { id: "NEZ", title: "NEZ" },
-      { id: "PIOBen", title: "PIOBen" },
-    ],
-    columnStyles: {
-      imeIPrezime: { width: 20 },
-      SVP: { width: 15 },
-      Bruto: { width: 15 },
-      OsnovicaPorez: { width: 15 },
-      Porez: { width: 15 },
-      OsnovicaDoprinosi: { width: 15 },
-      PIO: { width: 15 },
-      ZDR: { width: 15 },
-      NEZ: { width: 15 },
-      PIOBen: { width: 15 },
-    },
-  });
-  writer.writeRecords(data);
-}
-
 async function createExcelTable(data) {
   const fileName = data[0].imeIPrezime;
   // Creating a new workbook
@@ -206,6 +174,5 @@ async function createExcelTable(data) {
 module.exports = {
   readXml,
   xmlParser,
-  writeCsv,
   createExcelTable,
 };
