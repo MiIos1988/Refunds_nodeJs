@@ -14,10 +14,10 @@ const prepareRefunds = async () => {
     const parsedData = xmlData.map(xmlParser);
     const perUser = parsedData.reduce((acc, curr) => {
       curr.forEach((element) => {
-        if (acc[element.imeIPrezime]) {
-          acc[element.imeIPrezime].push(element);
+        if (acc[element.jmbg]) {
+          acc[element.jmbg].push(element);
         } else {
-          acc[element.imeIPrezime] = [element];
+          acc[element.jmbg] = [element];
         }
       });
       return acc;

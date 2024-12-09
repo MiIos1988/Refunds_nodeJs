@@ -43,6 +43,7 @@ function xmlParser(xmlFileData) {
   return data["ns1:PodaciPoreskeDeklaracije"]["ns1:DeklarisaniPrihodi"][
     "ns1:PodaciOPrihodima"
   ].map((income) => ({
+    jmbg: income["ns1:IdentifikatorPrimaoca"],
     imeIPrezime: `${income["ns1:Ime"]} ${income["ns1:Prezime"]}`,
     date: returnFormData(
       data["ns1:PodaciPoreskeDeklaracije"]["ns1:PodaciOPrijavi"][
